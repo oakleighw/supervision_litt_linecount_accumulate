@@ -34,12 +34,17 @@ class LineCounter:
 
             # we check if all four anchors of bbox are on the same side of vector
             x1, y1, x2, y2 = xyxy
+            # anchors = [
+            #     Point(x=x1, y=y1),
+            #     Point(x=x1, y=y2),
+            #     Point(x=x2, y=y1),
+            #     Point(x=x2, y=y2),
+            # ]
+            
+            #Track center of bounding box rather than entire box
             anchors = [
-                Point(x=x1, y=y1),
-                Point(x=x1, y=y2),
-                Point(x=x2, y=y1),
-                Point(x=x2, y=y2),
-            ]
+            Point(x=(x1+x2)/2, y=(y1+y2)/2),
+        ]
             triggers = [self.vector.is_in(point=anchor) for anchor in anchors]
 
             # detection is partially in and partially out
@@ -127,25 +132,25 @@ class LineCounterAnnotator:
             lineType=cv2.LINE_AA,
         )
 
-        in_text = f"in: {line_counter.in_count}"
-        out_text = f"out: {line_counter.out_count}"
+        #in_text = f"in: {line_counter.in_count}"
+        out_text = f"litter: {line_counter.out_count}"
 
-        (in_text_width, in_text_height), _ = cv2.getTextSize(
-            in_text, cv2.FONT_HERSHEY_SIMPLEX, self.text_scale, self.text_thickness
-        )
+        # (in_text_width, in_text_height), _ = cv2.getTextSize(
+        #     in_text, cv2.FONT_HERSHEY_SIMPLEX, self.text_scale, self.text_thickness
+        # )
         (out_text_width, out_text_height), _ = cv2.getTextSize(
             out_text, cv2.FONT_HERSHEY_SIMPLEX, self.text_scale, self.text_thickness
         )
 
-        in_text_x = int(
-            (line_counter.vector.end.x + line_counter.vector.start.x - in_text_width)
-            / 2
-        )
-        in_text_y = int(
-            (line_counter.vector.end.y + line_counter.vector.start.y + in_text_height)
-            / 2
-            - self.text_offset * in_text_height
-        )
+        # in_text_x = int(
+        #     (line_counter.vector.end.x + line_counter.vector.start.x - in_text_width)
+        #     / 2
+        # )
+        # in_text_y = int(
+        #     (line_counter.vector.end.y + line_counter.vector.start.y + in_text_height)
+        #     / 2
+        #     - self.text_offset * in_text_height
+        # )
 
         out_text_x = int(
             (line_counter.vector.end.x + line_counter.vector.start.x - out_text_width)
@@ -157,12 +162,13 @@ class LineCounterAnnotator:
             + self.text_offset * out_text_height
         )
 
-        in_text_background_rect = Rect(
-            x=in_text_x,
-            y=in_text_y - in_text_height,
-            width=in_text_width,
-            height=in_text_height,
-        ).pad(padding=self.text_padding)
+        # in_text_background_rect = Rect(
+        #     x=in_text_x,
+        #     y=in_text_y - in_text_height,
+        #     width=in_text_width,
+        #     height=in_text_height,
+        # ).pad(padding=self.text_padding)
+        
         out_text_background_rect = Rect(
             x=out_text_x,
             y=out_text_y - out_text_height,
@@ -170,13 +176,14 @@ class LineCounterAnnotator:
             height=out_text_height,
         ).pad(padding=self.text_padding)
 
-        cv2.rectangle(
-            frame,
-            in_text_background_rect.top_left.as_xy_int_tuple(),
-            in_text_background_rect.bottom_right.as_xy_int_tuple(),
-            self.color.as_bgr(),
-            -1,
-        )
+        # cv2.rectangle(
+        #     frame,
+        #     in_text_background_rect.top_left.as_xy_int_tuple(),
+        #     in_text_background_rect.bottom_right.as_xy_int_tuple(),
+        #     self.color.as_bgr(),
+        #     -1,
+        # )
+        
         cv2.rectangle(
             frame,
             out_text_background_rect.top_left.as_xy_int_tuple(),
@@ -185,16 +192,17 @@ class LineCounterAnnotator:
             -1,
         )
 
-        cv2.putText(
-            frame,
-            in_text,
-            (in_text_x, in_text_y),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            self.text_scale,
-            self.text_color.as_bgr(),
-            self.text_thickness,
-            cv2.LINE_AA,
-        )
+        # cv2.putText(
+        #     frame,
+        #     in_text,
+        #     (in_text_x, in_text_y),
+        #     cv2.FONT_HERSHEY_SIMPLEX,
+        #     self.text_scale,
+        #     self.text_color.as_bgr(),
+        #     self.text_thickness,
+        #     cv2.LINE_AA,
+        # )
+        
         cv2.putText(
             frame,
             out_text,
